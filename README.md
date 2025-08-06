@@ -1,2 +1,6 @@
-# AI-Legal_Advisor
-# AI-Legal_Advisor
+One of my most impactful and technically challenging projects is an **AI-Powered Legal Advisor for Contract Analysis and Regulatory Compliance**. This system was designed to help legal teams and procurement departments efficiently manage large volumes of legal documents, reduce manual review time, and ensure regulatory compliance using AI.
+
+I built the application using **Flask (Python) for the backend** and modularized it into components such as **clause extraction**, **contract summarization**, **NER-based entity extraction**, **risk analysis**, **clause suggestion**, **compliance scoring**, and a **question-answering chatbot**. The core AI functionality leverages transformer models like **DistilBERT** and **T5**, enabling the system to understand, summarize, and interpret dense legal texts. When a user uploads a contract PDF, the system extracts key clauses, identifies potential risks, highlights obligations, and even suggests improved versions of weak or missing clauses.
+
+What excites me most about this project is its potential to **democratize legal expertise**. Legal review is often time-consuming, expensive, and prone to human oversight. By applying AI to automate and enhance legal understanding, this project offers scalable assistance to startups, SMEs, and even law firms—reducing costs while maintaining quality. It also deepened my appreciation for NLP’s role in specialized domains like law, where context, precision, and compliance are critical. Building this legal advisor showed me how AI can serve as a powerful ally in high-stakes, information-heavy environments.
+
