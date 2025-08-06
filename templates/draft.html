@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contract Draft | Legal-E</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+  <nav class="flex justify-between items-center p-6">
+    <h1 class="text-2xl font-bold text-yellow-700"> Legal-E</h1>
+    <ul class="flex space-x-6 text-gray-800">
+      <li><a href="/">Home</a></li>
+      <li><a href="/summarization">Summarize</a></li>
+      <li><a href="/document_query">Document Query</a></li>
+    </ul>
+  </nav>
+
+  <main class="flex flex-col items-center py-16 px-4">
+    <h2 class="text-3xl font-bold text-gray-800 mb-4"> Generate Legal Drafts</h2>
+    <p class="mb-6 text-gray-600">Describe what you want in a legal contract, and AI will generate the draft.</p>
+
+    <form id="draft-form" class="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
+      <textarea id="prompt" class="w-full p-2 border rounded mb-4" rows="6" placeholder="E.g., Draft an NDA between Company A and B..." required></textarea>
+      <button type="submit" class="bg-yellow-600 text-white px-6 py-2 rounded hover:bg-yellow-700">Generate Draft</button>
+    </form>
+
+    <div class="mt-10 w-full max-w-2xl">
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">Generated Contract:</h3>
+      <div id="generated-draft" class="bg-white p-4 rounded border border-gray-300 text-gray-800 whitespace-pre-line min-h-[150px]"></div>
+    </div>
+  </main>
+
+  <script>
+    const draftForm = document.getElementById("draft-form");
+    draftForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const prompt = document.getElementById("prompt").value;
+
+      const res = await fetch("/draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+      const json = await res.json();
+      document.getElementById("generated-draft").innerText = json.draft || "No draft generated.";
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Summarization | Legal-E</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #fffbea, #fceabb);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .nav-link:hover {
+      color: #92400e;
+    }
+    .button-primary {
+      background-color: #92400e;
+      transition: all 0.3s ease;
+    }
+    .button-primary:hover {
+      background-color: #78350f;
+      transform: scale(1.05);
+    }
+    .card {
+      background-color: #e5d6a1;
+      border-radius: 1rem;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+    .file-box {
+      border: 2px dashed #e2e8f0;
+      border-radius: 1rem;
+      background-color: #fff2b2;
+      padding: 3rem;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .file-box:hover {
+      background-color: #fedf7c;
+      border-color: #facc15;
+    }
+    .file-box input[type="file"] {
+      display: none;
+    }
+    .browse-btn {
+      background-color: #facc15;
+      color: #92400e;
+      padding: 0.6rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .browse-btn:hover {
+      background-color: #fcd34d;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Navigation -->
+  <nav class="flex justify-between items-center px-8 py-6 bg-yellow-100 shadow-md sticky top-0 z-50">
+    <h1 class="text-3xl font-bold text-yellow-800"> Legal-E</h1>
+    <ul class="flex space-x-8 text-lg font-medium text-yellow-900">
+      <li><a class="nav-link" href="/">Home</a></li>
+      <li><a class="nav-link" href="/document_query">Document Query</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main -->
+  <main class="flex flex-col items-center py-20 px-4">
+    <h2 class="text-4xl font-extrabold text-gray-800 mb-4"> Summarize Legal Documents</h2>
+    <p class="mb-10 text-gray-600 text-lg">Upload a legal file (PDF or DOCX) and get an AI-generated summary instantly.</p>
+
+    <div class="flex flex-col lg:flex-row justify-center gap-10 w-full max-w-7xl">
+      <!-- Upload Form -->
+      <form id="upload-form" class="card p-10 flex-1 flex flex-col justify-between">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-4 text-lg">Choose File:</label>
+          <div class="file-box mb-6 min-h-[280px]">
+            <label for="file" class="browse-btn">Browse File</label>
+            <input type="file" name="file" id="file" accept=".pdf,.docx" required>
+            <p id="file-name" class="mt-4 font-semibold text-yellow-900"></p>
+            <p class="text-gray-500 mt-2 text-sm">(Supported formats: PDF, DOCX)</p>
+          </div>
+        </div>
+        <button type="submit" class="button-primary text-white px-10 py-3 rounded-lg w-full text-lg font-semibold mt-4">Upload and Summarize</button>
+      </form>
+
+      <!-- Summary Result -->
+      <div class="card p-10 flex-1 flex flex-col justify-between">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-700 mb-3">Summary Output:</h3>
+          <div id="summary" class="bg-[#fff2b2] border border-gray-300 rounded-lg p-6 text-gray-800 whitespace-pre-line min-h-[280px] max-h-[600px] overflow-y-auto text-base leading-relaxed shadow-inner">
+            No summary generated yet.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const fileNameDisplay = document.getElementById('file-name');
+    const summaryBox = document.getElementById('summary');
+    const form = document.getElementById('upload-form');
+
+    // Show chosen file name
+    fileInput.onchange = () => {
+      const file = fileInput.files[0];
+      if (file) {
+        fileNameDisplay.innerText = `Selected: ${file.name}`;
+      }
+    };
+
+    // Handle form submit
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Please select a file.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      summaryBox.innerText = "Generating summary, please wait...";
+
+      try {
+        const res = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const json = await res.json();
+        summaryBox.innerHTML = json.summary || " No summary returned.";
+      } catch (err) {
+        summaryBox.innerText = "Error generating summary.";
+        console.error(err);
+      }
+    };
+  </script>
+</body>
+</html>
