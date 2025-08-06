@@ -1,9 +1,41 @@
 import fitz  # PyMuPDF
+<<<<<<< HEAD
 from transformers import pipeline
+=======
+from docx import Document
+from transformers import pipeline
+import os
+>>>>>>> 72f408b (final)
 
 # Load Hugging Face Named Entity Recognition pipeline
 ner_pipeline = pipeline("ner", grouped_entities=True)
 
+<<<<<<< HEAD
+=======
+# ✅ Function 1: Extract text from PDF or DOCX
+def extract_text_from_file(file_path):
+    text = ""
+    ext = os.path.splitext(file_path)[1].lower()
+
+    try:
+        if ext == ".pdf":
+            doc = fitz.open(file_path)
+            for page in doc:
+                text += page.get_text()
+            doc.close()
+        elif ext == ".docx":
+            doc = Document(file_path)
+            for para in doc.paragraphs:
+                text += para.text + "\n"
+        else:
+            return "", "Unsupported file format."
+    except Exception as e:
+        return "", f"Error reading file: {str(e)}"
+
+    return text.strip(), None
+
+# ✅ Function 2: Extract entities (NER)
+>>>>>>> 72f408b (final)
 def extract_entities(filepath):
     try:
         # Extract text from PDF

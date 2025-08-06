@@ -1,6 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import os
 from werkzeug.utils import secure_filename
+<<<<<<< HEAD
+=======
+from utils.extract_text import extract_text_from_file, extract_entities
+>>>>>>> 72f408b (final)
 
 from models.summarizer import summarize_pdf
 from models.query_model import answer_query

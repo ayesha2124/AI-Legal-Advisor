@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import fitz  # PyMuPDF
 from docx import Document
 from transformers import pipeline
@@ -55,3 +56,54 @@ def answer_query(question, file_path):
         return result.get("answer", "❓ No answer found in the document.")
     except Exception as e:
         return f"⚠️ Error answering question: {str(e)}"
+=======
+import os
+from langchain_google_genai import GoogleGenerativeAI
+from langchain_core.prompts import PromptTemplate
+from models.vector_store import VectorStore
+from utils.extract_text import extract_text_from_file
+
+# Set your API key (you can move this to env)
+os.environ["GOOGLE_API_KEY"] = "AIzaSyBZLIi5ESCV8PcCDWBJgHJWKA-OvxwXaFg"
+
+# Setup prompt
+prompt_template = PromptTemplate.from_template("""
+Use the following context to answer the question.
+
+Context:
+{context}
+
+Question: {question}
+
+Answer:
+""")
+
+llm = GoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.2)
+
+def answer_query(question, file_path):
+    raw_text, error = extract_text_from_file(file_path)
+    if error:
+        return error
+
+    if not raw_text.strip():
+        return " Empty or unreadable document."
+
+    vs = VectorStore()
+    vs.build_index_from_text(raw_text)  # Optionally cache this if slow
+
+    top_chunks = vs.search(question, top_k=3)
+
+    if not top_chunks:
+        return "No relevant content found in the document."
+
+    context = "\n".join(top_chunks)
+    final_prompt = prompt_template.format(context=context, question=question)
+
+    try:
+        response = llm.invoke(final_prompt)
+        if "I don’t know" in response or "cannot answer" in response:
+            return "Unrelated question."
+        return response.strip()
+    except Exception as e:
+        return f" LLM Error: {str(e)}"
+>>>>>>> 72f408b (final)
